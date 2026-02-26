@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - '127.0.0.1:5000:5000' # localhost only — Nginx will proxy
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - uploads_data:/app/app/uploads # PDFs survive restarts
+      - vector_data:/app/vector_store # FAISS index survives restarts
+      - sqlite_data:/app/instance # SQLite DB survives restarts
+  # ── Uncomment below to add PostgreSQL ──────────────────────────────
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_DB=ragtutor
+  #     - POSTGRES_USER=raguser
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ['CMD-SHELL', 'pg_isready -U raguser -d ragtutor']
+  #     interval: 10s
+  #     retries: 5
+
+volumes:
+  uploads_data:
+  vector_data:
+  sqlite_data: # postgres_data:

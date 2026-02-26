@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Server Error — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-card glass-card">
+        <div class="error-code">500</div>
+        <h2>Something Went Wrong</h2>
+        <p>An unexpected error occurred. Please try again later.</p>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
+            <i class="ph ph-house"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

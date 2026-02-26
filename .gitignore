@@ -1,0 +1,50 @@
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Flask instance folder
+instance/
+
+# User uploads
+app/uploads/*
+!app/uploads/.gitkeep
+
+# Vector store (FAISS index + metadata)
+vector_store/
+chroma_db/
+
+# SQLite database
+*.db
+
+# Test artifacts
+test_*.py
+test_*.txt
+*_roadmap_*.txt
+*.docx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Temp files
+_roadmap_text.txt

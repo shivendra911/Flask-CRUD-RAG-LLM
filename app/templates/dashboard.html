@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Documents — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1><i class="ph ph-folder-open"></i> Your Documents</h1>
+            <p class="page-subtitle">Upload PDFs, text files, or markdown — then chat with your AI tutor about them.</p>
+        </div>
+    </div>
+
+    <!-- ── Upload Zone ────────────────────────────────────────────── -->
+    <div class="upload-zone glass-card" id="upload-zone">
+        <form method="POST" action="{{ url_for('main.upload') }}" enctype="multipart/form-data" id="upload-form">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon"><i class="ph ph-cloud-arrow-up"></i></div>
+                <h3>Drag & drop your file here</h3>
+                <p>or click to browse</p>
+                <p class="upload-hint">Supports: .pdf, .txt, .md — Max 20 MB</p>
+                <input type="file" name="file" id="file-input" accept=".pdf,.txt,.md" hidden>
+            </div>
+            <div class="upload-selected" id="upload-selected" style="display:none;">
+                <div class="selected-file">
+                    <i class="ph ph-file-text"></i>
+                    <span id="selected-filename"></span>
+                    <button type="button" class="btn-icon" id="clear-file" title="Remove"><i
+                            class="ph ph-x"></i></button>
+                </div>
+                <button type="submit" class="btn btn-primary" id="upload-btn">
+                    <i class="ph ph-upload-simple"></i> Upload
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ── Document List ──────────────────────────────────────────── -->
+    {% if documents %}
+    <div class="doc-grid">
+        {% for doc in documents %}
+        <div class="doc-card glass-card">
+            <div class="doc-card-icon">
+                {% if doc.original_name.endswith('.pdf') %}
+                <i class="ph ph-file-pdf"></i>
+                {% elif doc.original_name.endswith('.md') %}
+                <i class="ph ph-file-md"></i>
+                {% else %}
+                <i class="ph ph-file-text"></i>
+                {% endif %}
+            </div>
+            <div class="doc-card-info">
+                <h4 class="doc-name" title="{{ doc.original_name }}">{{ doc.original_name }}</h4>
+                <span class="doc-date">{{ doc.upload_date.strftime('%b %d, %Y · %I:%M %p') }}</span>
+            </div>
+            <form method="POST" action="{{ url_for('main.delete_document', doc_id=doc.id) }}" class="doc-delete-form"
+                onsubmit="return confirm('Delete &quot;{{ doc.original_name }}&quot;? This cannot be undone.')">
+                <button type="submit" class="btn-icon btn-danger" title="Delete">
+                    <i class="ph ph-trash"></i>
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state glass-card">
+        <div class="empty-icon"><i class="ph ph-notebook"></i></div>
+        <h3>No documents yet</h3>
+        <p>Upload your first file above to start learning with your AI tutor.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-input');
+    const uploadSelected = document.getElementById('upload-selected');
+    const selectedFilename = document.getElementById('selected-filename');
+    const clearFile = document.getElementById('clear-file');
+    const uploadForm = document.getElementById('upload-form');
+    const uploadBtn = document.getElementById('upload-btn');
+
+    // Click to browse
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // Drag & drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            showSelected(e.dataTransfer.files[0].name);
+        }
+    });
+
+    // File selected
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+            showSelected(fileInput.files[0].name);
+        }
+    });
+
+    function showSelected(name) {
+        selectedFilename.textContent = name;
+        uploadArea.style.display = 'none';
+        uploadSelected.style.display = 'flex';
+    }
+
+    clearFile.addEventListener('click', () => {
+        fileInput.value = '';
+        uploadArea.style.display = 'flex';
+        uploadSelected.style.display = 'none';
+    });
+
+    // Show loading state on upload
+    uploadForm.addEventListener('submit', () => {
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="ph ph-spinner"></i> Uploading…';
+        uploadBtn.classList.add('btn-loading');
+    });
+</script>
+{% endblock %}

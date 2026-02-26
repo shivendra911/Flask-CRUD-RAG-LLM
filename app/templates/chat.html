@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Chat — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <!-- ── Chat Messages ─────────────────────────────────────────── -->
+    <div class="chat-messages" id="chat-messages">
+        <div class="chat-welcome">
+            <div class="chat-welcome-icon"><i class="ph ph-brain"></i></div>
+            <h2>RAG Tutor</h2>
+            <p>Ask me anything about your uploaded documents.<br>I'll answer only from your notes — no guessing!</p>
+            <div class="chat-suggestions">
+                <button class="suggestion-chip" onclick="useSuggestion(this)">Summarize my latest upload</button>
+                <button class="suggestion-chip" onclick="useSuggestion(this)">What are the key concepts?</button>
+                <button class="suggestion-chip" onclick="useSuggestion(this)">Explain the main topic in simple
+                    terms</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Chat Input ─────────────────────────────────────────────── -->
+    <div class="chat-input-container glass-card">
+        <div class="chat-input-wrapper">
+            <textarea id="question-input" placeholder="Ask about your documents…" rows="1" autofocus></textarea>
+            <button id="send-btn" class="btn btn-primary btn-send" onclick="sendMessage()" title="Send">
+                <i class="ph ph-paper-plane-tilt"></i>
+            </button>
+        </div>
+        <p class="chat-disclaimer">Answers are generated from your uploaded documents only.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}
