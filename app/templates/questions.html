@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Questions — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="feature-container">
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1><i class="ph ph-cards"></i> Question Bank</h1>
+            <p class="page-subtitle">Generate study questions and flashcards from your uploaded documents.</p>
+        </div>
+    </div>
+
+    <!-- ── Controls ───────────────────────────────────────────────── -->
+    <div class="feature-controls glass-card" id="questions-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <label><i class="ph ph-list-checks"></i> Question Type</label>
+                <div class="tab-group">
+                    <button class="tab-btn active" data-type="short_answer" onclick="selectQuestionType(this)">
+                        <i class="ph ph-chat-text"></i> Short Answer
+                    </button>
+                    <button class="tab-btn" data-type="true_false" onclick="selectQuestionType(this)">
+                        <i class="ph ph-check-square"></i> True / False
+                    </button>
+                    <button class="tab-btn" data-type="flashcard" onclick="selectQuestionType(this)">
+                        <i class="ph ph-cards"></i> Flashcards
+                    </button>
+                </div>
+            </div>
+            <div class="control-group control-small">
+                <label for="questions-count"><i class="ph ph-hash"></i> Count</label>
+                <select id="questions-count">
+                    <option value="4">4</option>
+                    <option value="6" selected>6</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="generate-questions-btn" onclick="generateQuestions()">
+                <i class="ph ph-sparkle"></i> Generate
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Progress ───────────────────────────────────────────────── -->
+    <div class="progress-tracker glass-card" id="progress-tracker" style="display:none;">
+        <div class="progress-info">
+            <span><i class="ph ph-chart-line-up"></i> Progress</span>
+            <span id="progress-text">0 / 0</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- ── Questions Area ─────────────────────────────────────────── -->
+    <div id="questions-loading" class="loading-state" style="display:none;">
+        <div class="loading-spinner"></div>
+        <p>Generating study questions...</p>
+    </div>
+
+    <div id="questions-area" style="display:none;">
+        <div id="questions-items"></div>
+    </div>
+
+    <!-- ── Empty State ────────────────────────────────────────────── -->
+    <div class="empty-state glass-card" id="questions-empty">
+        <div class="empty-icon"><i class="ph ph-cards"></i></div>
+        <h3>Ready to study?</h3>
+        <p>Click "Generate" to create study questions from your documents.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/questions.js') }}"></script>
+{% endblock %}

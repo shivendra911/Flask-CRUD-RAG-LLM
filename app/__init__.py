@@ -48,13 +48,19 @@ def create_app(config_class=Config):
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # ── Register blueprint ────────────────────────────────────────────
+    # ── Register blueprints ─────────────────────────────────────────
     from app.routes import main
+    from app.admin_routes import admin_bp
 
     app.register_blueprint(main)
+    app.register_blueprint(admin_bp)
 
     # ── Error handlers ────────────────────────────────────────────────
     from flask import render_template, jsonify
+
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template("errors/403.html"), 403
 
     @app.errorhandler(404)
     def not_found(e):
@@ -76,6 +82,21 @@ def create_app(config_class=Config):
     def internal_error(e):
         db.session.rollback()
         return render_template("errors/500.html"), 500
+
+    # ── CLI commands ──────────────────────────────────────────────────
+    import click
+
+    @app.cli.command("create-admin")
+    @click.argument("username")
+    def create_admin(username):
+        """Promote an existing user to admin role."""
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            click.echo(f"Error: User '{username}' not found.")
+            return
+        user.role = "admin"
+        db.session.commit()
+        click.echo(f"✓ User '{username}' is now an admin.")
 
     # Create tables on first run (development convenience)
     with app.app_context():

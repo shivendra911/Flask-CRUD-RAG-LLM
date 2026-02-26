@@ -187,7 +187,14 @@ def upload():
 
             chunks = load_and_chunk(filepath)
             if chunks:
-                store_chunks(chunks, current_user.id, new_doc.id)
+                date_str = new_doc.upload_date.strftime("%Y-%m-%d %H:%M:%S UTC")
+                store_chunks(
+                    chunks, 
+                    current_user.id, 
+                    new_doc.id,
+                    filename=original_name,
+                    upload_date=date_str
+                )
         except Exception as rag_err:
             current_app.logger.warning(f"RAG processing skipped: {rag_err}")
 
@@ -312,3 +319,130 @@ def chat():
         return jsonify(
             {"error": "Something went wrong. Please try again."}
         ), 500
+
+
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  QUIZ GENERATOR                                                    ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+@main.route("/quiz")
+@login_required
+def quiz_page():
+    return render_template("quiz.html")
+
+
+@main.route("/quiz/generate", methods=["POST"])
+@login_required
+@limiter.limit("10 per minute")
+def quiz_generate():
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Invalid request."}), 400
+
+    num_questions = min(int(data.get("num_questions", 5)), 10)
+    topic = data.get("topic", "").strip()
+
+    try:
+        from app.rag_utils import (
+            retrieve_relevant_chunks,
+            build_quiz_prompt,
+            generate_answer,
+        )
+
+        query = topic if topic else "key concepts and important topics"
+        chunks = retrieve_relevant_chunks(query, current_user.id, k=6)
+
+        if not chunks:
+            return jsonify({"error": "No documents found. Upload some files first!"})
+
+        prompt = build_quiz_prompt(chunks, num_questions, topic)
+        result = generate_answer(prompt)
+        return jsonify({"result": result})
+
+    except Exception as e:
+        current_app.logger.error(f"Quiz generation error: {e}")
+        return jsonify({"error": "Failed to generate quiz. Please try again."}), 500
+
+
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  PUZZLE GENERATOR                                                  ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+@main.route("/puzzle")
+@login_required
+def puzzle_page():
+    return render_template("puzzle.html")
+
+
+@main.route("/puzzle/generate", methods=["POST"])
+@login_required
+@limiter.limit("10 per minute")
+def puzzle_generate():
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Invalid request."}), 400
+
+    puzzle_type = data.get("type", "fill_blank")
+    count = min(int(data.get("count", 8)), 12)
+
+    try:
+        from app.rag_utils import (
+            retrieve_relevant_chunks,
+            build_puzzle_prompt,
+            generate_answer,
+        )
+
+        chunks = retrieve_relevant_chunks("important concepts and key terms", current_user.id, k=6)
+
+        if not chunks:
+            return jsonify({"error": "No documents found. Upload some files first!"})
+
+        prompt = build_puzzle_prompt(chunks, puzzle_type, count)
+        result = generate_answer(prompt)
+        return jsonify({"result": result})
+
+    except Exception as e:
+        current_app.logger.error(f"Puzzle generation error: {e}")
+        return jsonify({"error": "Failed to generate puzzle. Please try again."}), 500
+
+
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  QUESTION BANK                                                     ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+@main.route("/questions")
+@login_required
+def questions_page():
+    return render_template("questions.html")
+
+
+@main.route("/questions/generate", methods=["POST"])
+@login_required
+@limiter.limit("10 per minute")
+def questions_generate():
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Invalid request."}), 400
+
+    q_type = data.get("type", "short_answer")
+    count = min(int(data.get("count", 6)), 10)
+
+    try:
+        from app.rag_utils import (
+            retrieve_relevant_chunks,
+            build_questions_prompt,
+            generate_answer,
+        )
+
+        chunks = retrieve_relevant_chunks("key concepts and study material", current_user.id, k=6)
+
+        if not chunks:
+            return jsonify({"error": "No documents found. Upload some files first!"})
+
+        prompt = build_questions_prompt(chunks, q_type, count)
+        result = generate_answer(prompt)
+        return jsonify({"result": result})
+
+    except Exception as e:
+        current_app.logger.error(f"Questions generation error: {e}")
+        return jsonify({"error": "Failed to generate questions. Please try again."}), 500

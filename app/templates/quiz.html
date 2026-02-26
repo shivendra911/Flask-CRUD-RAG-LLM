@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Quiz — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="feature-container">
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1><i class="ph ph-exam"></i> Quiz Generator</h1>
+            <p class="page-subtitle">Generate interactive quizzes from your uploaded documents to test your knowledge.
+            </p>
+        </div>
+    </div>
+
+    <!-- ── Controls ───────────────────────────────────────────────── -->
+    <div class="feature-controls glass-card" id="quiz-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <label for="quiz-topic"><i class="ph ph-magnifying-glass"></i> Topic (optional)</label>
+                <input type="text" id="quiz-topic" placeholder="e.g. Machine Learning, Chapter 3..." autocomplete="off">
+            </div>
+            <div class="control-group control-small">
+                <label for="quiz-count"><i class="ph ph-hash"></i> Questions</label>
+                <select id="quiz-count">
+                    <option value="3">3</option>
+                    <option value="5" selected>5</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="generate-quiz-btn" onclick="generateQuiz()">
+                <i class="ph ph-sparkle"></i> Generate Quiz
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Quiz Area ──────────────────────────────────────────────── -->
+    <div id="quiz-loading" class="loading-state" style="display:none;">
+        <div class="loading-spinner"></div>
+        <p>Generating your quiz from documents...</p>
+    </div>
+
+    <div id="quiz-area" style="display:none;">
+        <div id="quiz-questions"></div>
+
+        <div class="quiz-actions" id="quiz-actions" style="display:none;">
+            <button class="btn btn-primary" id="submit-quiz-btn" onclick="submitQuiz()">
+                <i class="ph ph-check-circle"></i> Submit Answers
+            </button>
+        </div>
+
+        <div class="quiz-result glass-card" id="quiz-result" style="display:none;">
+            <div class="result-header">
+                <div class="result-icon"><i class="ph ph-trophy"></i></div>
+                <h2 id="result-title">Quiz Complete!</h2>
+                <p class="result-score" id="result-score"></p>
+            </div>
+            <div class="result-bar-container">
+                <div class="result-bar" id="result-bar"></div>
+            </div>
+            <button class="btn btn-primary" onclick="resetQuiz()">
+                <i class="ph ph-arrow-counter-clockwise"></i> Generate New Quiz
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Empty State ────────────────────────────────────────────── -->
+    <div class="empty-state glass-card" id="quiz-empty">
+        <div class="empty-icon"><i class="ph ph-exam"></i></div>
+        <h3>Ready to test yourself?</h3>
+        <p>Click "Generate Quiz" to create questions from your documents.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}

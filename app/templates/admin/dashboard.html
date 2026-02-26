@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1><i class="ph ph-shield-check"></i> Admin Dashboard</h1>
+            <p class="page-subtitle">Manage users and monitor system activity.</p>
+        </div>
+    </div>
+
+    <!-- ── Stat Cards ─────────────────────────────────────────────── -->
+    <div class="stat-grid">
+        <div class="stat-card glass-card">
+            <div class="stat-icon stat-icon-users"><i class="ph ph-users"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ total_users }}</span>
+                <span class="stat-label">Total Users</span>
+            </div>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-icon stat-icon-docs"><i class="ph ph-files"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ total_docs }}</span>
+                <span class="stat-label">Total Documents</span>
+            </div>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-icon stat-icon-admins"><i class="ph ph-shield-check"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ user_stats | selectattr('role', 'equalto', 'admin') | list | length
+                    }}</span>
+                <span class="stat-label">Admins</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── User Management Table ──────────────────────────────────── -->
+    <div class="admin-section glass-card">
+        <h2><i class="ph ph-users-three"></i> User Management</h2>
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Documents</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in user_stats %}
+                    <tr>
+                        <td class="td-id">#{{ user.id }}</td>
+                        <td class="td-username">
+                            <i class="ph ph-user-circle"></i>
+                            {{ user.username }}
+                        </td>
+                        <td>
+                            <span class="role-badge role-{{ user.role }}">
+                                {% if user.role == 'admin' %}
+                                <i class="ph ph-shield-check"></i>
+                                {% else %}
+                                <i class="ph ph-user"></i>
+                                {% endif %}
+                                {{ user.role | capitalize }}
+                            </span>
+                        </td>
+                        <td class="td-docs">{{ user.doc_count }}</td>
+                        <td class="td-actions">
+                            {% if user.id != current_user.id %}
+                            <form method="POST" action="{{ url_for('admin.toggle_role', user_id=user.id) }}"
+                                style="display:inline;">
+                                <button type="submit" class="btn-sm btn-toggle" title="Toggle role">
+                                    {% if user.role == 'admin' %}
+                                    <i class="ph ph-arrow-down"></i> Demote
+                                    {% else %}
+                                    <i class="ph ph-arrow-up"></i> Promote
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                                style="display:inline;"
+                                onsubmit="return confirm('Delete user &quot;{{ user.username }}&quot; and all their data? This cannot be undone.')">
+                                <button type="submit" class="btn-sm btn-delete" title="Delete user">
+                                    <i class="ph ph-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="td-self">You</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,18 +1,27 @@
+# Version control
+.git/
+.gitignore
+
+# Virtual environment
 venv/
 .venv/
+
+# Environment variables (injected at runtime)
 .env
+
+# Python cache
 __pycache__/
 *.py[cod]
+
+# Runtime data (mounted as volumes)
 instance/
 vector_store/
 chroma_db/
-.git/
-.gitignore
+
+# Documentation (not needed in image)
 *.md
-*.docx
-*.txt
 !requirements.txt
-test_*
-_roadmap_*
+
+# IDE
 .vscode/
 .idea/

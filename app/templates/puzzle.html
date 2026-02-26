@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Puzzle — RAG Tutor{% endblock %}
+
+{% block content %}
+<div class="feature-container">
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="page-header">
+        <div>
+            <h1><i class="ph ph-puzzle-piece"></i> Puzzle Generator</h1>
+            <p class="page-subtitle">Challenge yourself with word puzzles created from your documents.</p>
+        </div>
+    </div>
+
+    <!-- ── Controls ───────────────────────────────────────────────── -->
+    <div class="feature-controls glass-card" id="puzzle-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <label><i class="ph ph-squares-four"></i> Puzzle Type</label>
+                <div class="tab-group">
+                    <button class="tab-btn active" data-type="fill_blank" onclick="selectPuzzleType(this)">
+                        <i class="ph ph-text-aa"></i> Fill in the Blank
+                    </button>
+                    <button class="tab-btn" data-type="scramble" onclick="selectPuzzleType(this)">
+                        <i class="ph ph-shuffle"></i> Word Scramble
+                    </button>
+                </div>
+            </div>
+            <div class="control-group control-small">
+                <label for="puzzle-count"><i class="ph ph-hash"></i> Count</label>
+                <select id="puzzle-count">
+                    <option value="5">5</option>
+                    <option value="8" selected>8</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="generate-puzzle-btn" onclick="generatePuzzle()">
+                <i class="ph ph-sparkle"></i> Generate Puzzle
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Timer ──────────────────────────────────────────────────── -->
+    <div class="puzzle-timer glass-card" id="puzzle-timer" style="display:none;">
+        <i class="ph ph-timer"></i>
+        <span id="timer-display">00:00</span>
+    </div>
+
+    <!-- ── Puzzle Area ────────────────────────────────────────────── -->
+    <div id="puzzle-loading" class="loading-state" style="display:none;">
+        <div class="loading-spinner"></div>
+        <p>Creating puzzles from your documents...</p>
+    </div>
+
+    <div id="puzzle-area" style="display:none;">
+        <div id="puzzle-items"></div>
+
+        <div class="quiz-actions" id="puzzle-actions">
+            <button class="btn btn-primary" id="check-puzzle-btn" onclick="checkPuzzle()">
+                <i class="ph ph-check-circle"></i> Check Answers
+            </button>
+        </div>
+
+        <div class="quiz-result glass-card" id="puzzle-result" style="display:none;">
+            <div class="result-header">
+                <div class="result-icon"><i class="ph ph-trophy"></i></div>
+                <h2 id="puzzle-result-title">Puzzle Complete!</h2>
+                <p class="result-score" id="puzzle-result-score"></p>
+            </div>
+            <div class="result-bar-container">
+                <div class="result-bar" id="puzzle-result-bar"></div>
+            </div>
+            <button class="btn btn-primary" onclick="resetPuzzle()">
+                <i class="ph ph-arrow-counter-clockwise"></i> New Puzzle
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Empty State ────────────────────────────────────────────── -->
+    <div class="empty-state glass-card" id="puzzle-empty">
+        <div class="empty-icon"><i class="ph ph-puzzle-piece"></i></div>
+        <h3>Ready for a challenge?</h3>
+        <p>Click "Generate Puzzle" to create word puzzles from your documents.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/puzzle.js') }}"></script>
+{% endblock %}

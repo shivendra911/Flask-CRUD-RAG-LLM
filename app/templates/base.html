@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RAG Tutor — Upload your notes, chat with an AI that answers only from your documents.">
+    <meta name="description"
+        content="RAG Tutor — Upload your notes, chat with an AI that answers only from your documents.">
     <title>{% block title %}RAG Tutor{% endblock %}</title>
 
     <!-- Google Fonts -->
@@ -19,6 +21,7 @@
 
     {% block head %}{% endblock %}
 </head>
+
 <body>
     <!-- ── Navigation ─────────────────────────────────────────────── -->
     {% if current_user.is_authenticated %}
@@ -29,14 +32,39 @@
                 <span class="brand-text">RAG Tutor</span>
             </a>
             <div class="nav-links">
-                <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+                <a href="{{ url_for('main.dashboard') }}"
+                    class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
                     <i class="ph ph-folder-open"></i> Documents
                 </a>
-                <a href="{{ url_for('main.chat_page') }}" class="nav-link {% if request.endpoint == 'main.chat_page' %}active{% endif %}">
+                <a href="{{ url_for('main.chat_page') }}"
+                    class="nav-link {% if request.endpoint == 'main.chat_page' %}active{% endif %}">
                     <i class="ph ph-chat-circle-dots"></i> Chat
                 </a>
+                <a href="{{ url_for('main.quiz_page') }}"
+                    class="nav-link {% if request.endpoint == 'main.quiz_page' %}active{% endif %}">
+                    <i class="ph ph-exam"></i> Quiz
+                </a>
+                <a href="{{ url_for('main.puzzle_page') }}"
+                    class="nav-link {% if request.endpoint == 'main.puzzle_page' %}active{% endif %}">
+                    <i class="ph ph-puzzle-piece"></i> Puzzle
+                </a>
+                <a href="{{ url_for('main.questions_page') }}"
+                    class="nav-link {% if request.endpoint == 'main.questions_page' %}active{% endif %}">
+                    <i class="ph ph-cards"></i> Questions
+                </a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin.dashboard') }}"
+                    class="nav-link nav-admin {% if request.endpoint and request.endpoint.startswith('admin.') %}active{% endif %}">
+                    <i class="ph ph-shield-check"></i> Admin
+                </a>
+                {% endif %}
                 <div class="nav-divider"></div>
-                <span class="nav-user"><i class="ph ph-user-circle"></i> {{ current_user.username }}</span>
+                <span class="nav-user">
+                    <i class="ph ph-user-circle"></i> {{ current_user.username }}
+                    {% if current_user.is_admin %}
+                    <span class="nav-role-badge">Admin</span>
+                    {% endif %}
+                </span>
                 <a href="{{ url_for('main.logout') }}" class="nav-link nav-logout">
                     <i class="ph ph-sign-out"></i> Logout
                 </a>
@@ -76,4 +104,5 @@
         });
     </script>
 </body>
+
 </html>
